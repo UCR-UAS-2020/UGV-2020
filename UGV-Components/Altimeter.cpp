@@ -1,5 +1,6 @@
 #include "Altimeter.h"
 //comment
+//demonstation
 #define cs_pin 10    // chip (slave) select
 #define sdo_pin 12   // MISO
 #define sdi_pin 11  // MOSI
