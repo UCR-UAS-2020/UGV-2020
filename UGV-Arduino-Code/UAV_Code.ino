@@ -1,6 +1,6 @@
 #include "Altimeter.h"
-//#include "GPS.h"
-//#include "Radio.h"
+#include "GPS.h"
+#include "Radio.h"
 #include "ServoTimer2.h"
 int state = 0;
 
@@ -18,8 +18,8 @@ void setup()
 {
     //place component setup here 
     altimeterSetup();
-    //GPSsetup();
-    //radioSetup();
+    GPSsetup();
+    radioSetup();
 }
 
 void loop() 
