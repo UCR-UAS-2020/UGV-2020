@@ -73,6 +73,18 @@ void loop()
       ManualStateMachine(stateChange());
       //motors are in a stop state
     }
+    case 33: //manual drive
+    {
+      //forward
+    }
+    case 34: //manual drive
+    {
+      //turnRight
+    }
+    case 35: //manual drive
+    {
+      //turnLeft
+    }
     
    }
 }
