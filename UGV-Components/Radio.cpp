@@ -132,6 +132,8 @@ void radioSetup()
 
 char stateChange()  //rx recieving 
 {
+	char stateChanger = 'z';
+
 	if (rf69.available()) {
 		// Should be a message for us now   
 		uint8_t buf[RH_RF69_MAX_MESSAGE_LEN];
@@ -142,6 +144,8 @@ char stateChange()  //rx recieving
 			Serial.print("Received [");
 			Serial.print(len);
 			Serial.print("]: ");
+
+			stateChanger = len;
 
 			if (strstr((char*)buf, "a")) {
 				// Send auto mode
@@ -169,4 +173,5 @@ char stateChange()  //rx recieving
 			Serial.println("Receive failed");
 		}
 	}
+	return stateChanger;
 }
