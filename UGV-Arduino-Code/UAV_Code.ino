@@ -70,6 +70,7 @@ void loop()
       currentLat = getLat();
       currentLon = getLon();
 
+      ManualStateMachine(stateChange());
       //motors are in a stop state
     }
     
@@ -93,6 +94,30 @@ void CommandStateMachine(char command_state)
   else if(command_state == 3)
   {
     control_state = CONTROL_STOP;
+  }
+}
+
+void ManualStateMachine(char manual_state)
+{
+  if(command_state == 0)
+  {
+    manual_state = COMMAND_STOP;
+  }
+  else if(command_state == 1)
+  {
+    manual_state = COMMAND_FORWARD;
+  }
+  else if(command_state == 2)
+  {
+    manual_state = COMMAND_BACK;
+  }
+  else if(command_state == 3)
+  {
+    manual_state = COMMAND_TURNL;
+  }
+  else if(command_state == 4)
+  {
+    manual_state = COMMAND_TURNR;
   }
 }
 
