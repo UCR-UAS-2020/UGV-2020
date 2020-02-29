@@ -3,16 +3,22 @@
 #include "Radio.h"
 #include "ServoTimer2.h"
 int state = 0;
+double currentLat();
+double currentLon();
 
 float period = 50.0;
 float DRIVE_PERIOD = 100;
 long GROUND_LEVEL = 0.0; //change
 long MIN_FLIGHT_LEVEL = 7.0; //meters //change and change sea level
 long DETACT_PARA_HEIGHT = 1.524; //meters
+static const double COURSE_LAT = 33.975849, COURSE_LON = -117.326131;  //destination
 
 bool isFlying = true;
 bool isDropping = false;
 bool isGrounded = false;
+
+enum UGVControlState{CONTROL_START, CONTROL_AUTO, CONTROL_MANUAL, CONTROL_STOP};
+UGVControlState control_state;
   
 void setup() 
 {
@@ -55,5 +61,34 @@ void loop()
       //reorient
       break;
     }
+    case 32: //manual drive
+    {
+      //stand-by
+      currentLat = getLat();
+      currentLon = getLon();
+
+      //motors are in a stop state
+    }
+    
    }
+}
+
+void CommandStateMachine(char command_state)
+{
+  if(command_state == 0)
+  {
+    control_state = CONTROL_START;
+  }
+  else if(command_state == 1)
+  {
+    control_state = CONTROL_AUTO;
+  }
+  else if(command_state == 2)
+  {
+    control_state = CONTROL_MANUAL;
+  }
+  else if(command_state == 3)
+  {
+    control_state = CONTROL_STOP;
+  }
 }

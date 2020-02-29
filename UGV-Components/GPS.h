@@ -5,7 +5,9 @@
 #include <SoftwareSerial.h>
 
 void GPSsetup();
-double calculateDegree();
-double calculateDistance();
+double calculateDegree(double, double);
+double calculateDistance(double, double);
+double getLon();
+double getLat();
 
 #endif

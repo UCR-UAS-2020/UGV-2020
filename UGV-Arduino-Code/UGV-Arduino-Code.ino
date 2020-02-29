@@ -313,7 +313,7 @@ unsigned int CommandStateMachine(unsigned int state) {
     case COMMAND_STOP:
     if(commandSaved == 1) {
         state = COMMAND_FORWARD;
-        Serial.println("Popper");
+        //Serial.println("Popper");
     }
     else if(commandSaved == 2) {
         state = COMMAND_BACK;

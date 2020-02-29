@@ -130,9 +130,9 @@ void radioSetup()
 	}
 }*/
 
-char stateChange()  //rx recieving 
+unsigned int stateChange()  //rx recieving 
 {
-	char stateChanger = 'z';
+	char stateChanger;
 
 	if (rf69.available()) {
 		// Should be a message for us now   
@@ -146,27 +146,37 @@ char stateChange()  //rx recieving
 			Serial.print("]: ");
 
 			stateChanger = len;
-
-			if (strstr((char*)buf, "a")) {
+			if (strstr((char*)buf, "0")) {
+				// Send start mode
+				uint8_t data[] = "start";
+				rf69.send(data, sizeof(data));
+				rf69.waitPacketSent();
+				Serial.println("Sent update");
+				stateChanger = 0x00;
+			}
+			if (strstr((char*)buf, "1")) {
 				// Send auto mode
 				uint8_t data[] = "auto";
 				rf69.send(data, sizeof(data));
 				rf69.waitPacketSent();
 				Serial.println("Sent update");
+				stateChanger = 0x01;
 			}
-			if (strstr((char*)buf, "m")) {
+			if (strstr((char*)buf, "2")) {
 				// Send manual mode
 				uint8_t data[] = "manual";
 				rf69.send(data, sizeof(data));
 				rf69.waitPacketSent();
 				Serial.println("Sent update");
+				stateChanger = 0x02;
 			}
-			if (strstr((char*)buf, "s")) {
+			if (strstr((char*)buf, "3")) {
 				// Send stop mode
 				uint8_t data[] = "stop";
 				rf69.send(data, sizeof(data));
 				rf69.waitPacketSent();
 				Serial.println("Sent update");
+				stateChanger = 0x03;
 			}
 		}
 		else {

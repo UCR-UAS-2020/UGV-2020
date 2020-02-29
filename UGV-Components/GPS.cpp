@@ -3,8 +3,6 @@
 static const int RXPin = 4, TXPin = 3;
 static const uint32_t GPSBaud = 9600;
 
-static const double COURSE_LAT = 33.975849, COURSE_LON = -117.326131;
-
 // The TinyGPS++ object
 TinyGPSPlus gps;
 
@@ -21,7 +19,7 @@ void GPSsetup()
 	Serial.print("Starting GPS");
 }
 
-double calculateDistance()
+double calculateDistance(double lat, double lon)
 {
 	while (ss.available() > 0)
 	{
@@ -33,7 +31,7 @@ double calculateDistance()
 		Serial.println();
 		if (gps.location.isValid())
 		{
-			double distanceToFinish = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), COURSE_LAT, COURSE_LON);
+			double distanceToFinish = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), lat, lon);
 
 			Serial.print(F("Finish     Distance="));
 			Serial.print(distanceToFinish / 1000, 6);
@@ -52,7 +50,7 @@ double calculateDistance()
 	}
 }
 
-double calculateDegree()
+double calculateDegree(double lat, double lon)
 {
 	while (ss.available() > 0)
 	{
@@ -64,7 +62,7 @@ double calculateDegree()
 		Serial.println();
 		if (gps.location.isValid())
 		{
-			double courseToFinish = TinyGPSPlus::courseTo(gps.location.lat(), gps.location.lng(), COURSE_LAT, COURSE_LON);
+			double courseToFinish = TinyGPSPlus::courseTo(gps.location.lat(), gps.location.lng(), lat, lon;
 
 			Serial.print(courseToFinish, 6);
 			Serial.print(F(" degrees ["));
@@ -82,4 +80,14 @@ double calculateDegree()
 		last = millis();
 		Serial.println();
 	}
+}
+
+double getLon()
+{
+	return gps.location.lng();
+}
+
+double getLat()
+{
+	return gps.location.lat();
 }
