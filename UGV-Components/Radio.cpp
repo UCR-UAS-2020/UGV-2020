@@ -130,7 +130,7 @@ void radioSetup()
 	}
 }*/
 
-unsigned int stateChange()  //rx recieving 
+char stateChange()  //rx recieving 
 {
 	char stateChanger;
 
@@ -152,7 +152,7 @@ unsigned int stateChange()  //rx recieving
 				rf69.send(data, sizeof(data));
 				rf69.waitPacketSent();
 				Serial.println("Sent update");
-				stateChanger = 0x00;
+				stateChanger = 0x00;  
 			}
 			if (strstr((char*)buf, "1")) {
 				// Send auto mode
@@ -160,7 +160,7 @@ unsigned int stateChange()  //rx recieving
 				rf69.send(data, sizeof(data));
 				rf69.waitPacketSent();
 				Serial.println("Sent update");
-				stateChanger = 0x01;
+				stateChanger = 0x01; 
 			}
 			if (strstr((char*)buf, "2")) {
 				// Send manual mode

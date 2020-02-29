@@ -18,7 +18,10 @@ bool isDropping = false;
 bool isGrounded = false;
 
 enum UGVControlState{CONTROL_START, CONTROL_AUTO, CONTROL_MANUAL, CONTROL_STOP};
+enum UGVManualState{COMMAND_STOP, COMMAND_FORWARD, COMMAND_BACK, COMMAND_TURNL, COMMAND_TURNR};
 UGVControlState control_state;
+UGVManualState manual_state;
+char currState;
   
 void setup() 
 {
@@ -92,3 +95,5 @@ void CommandStateMachine(char command_state)
     control_state = CONTROL_STOP;
   }
 }
+
+ 
