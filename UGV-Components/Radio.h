@@ -5,6 +5,8 @@
 #include <RHReliableDatagram.h>
 
 void radioSetup();
-void ping();
+char stateChange();
+//void ping();
+
 
 #endif

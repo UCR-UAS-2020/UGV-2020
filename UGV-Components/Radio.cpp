@@ -97,7 +97,7 @@ void radioSetup()
 	Serial.print("RFM69 radio @");  Serial.print((int)RF69_FREQ);  Serial.println(" MHz");
 }
 
-void ping()
+/*void ping()
 {
 	delay(1000);  // Wait 1 second between transmits, could also 'sleep' here!
 
@@ -127,5 +127,46 @@ void ping()
 	}
 	else {
 		Serial.println("No reply, is another RFM69 listening?");
+	}
+}*/
+
+char stateChange()  //rx recieving 
+{
+	if (rf69.available()) {
+		// Should be a message for us now   
+		uint8_t buf[RH_RF69_MAX_MESSAGE_LEN];
+		uint8_t len = sizeof(buf);
+		if (rf69.recv(buf, &len)) {
+			if (!len) return;
+			buf[len] = 0;
+			Serial.print("Received [");
+			Serial.print(len);
+			Serial.print("]: ");
+
+			if (strstr((char*)buf, "a")) {
+				// Send auto mode
+				uint8_t data[] = "auto";
+				rf69.send(data, sizeof(data));
+				rf69.waitPacketSent();
+				Serial.println("Sent update");
+			}
+			if (strstr((char*)buf, "m")) {
+				// Send manual mode
+				uint8_t data[] = "manual";
+				rf69.send(data, sizeof(data));
+				rf69.waitPacketSent();
+				Serial.println("Sent update");
+			}
+			if (strstr((char*)buf, "s")) {
+				// Send stop mode
+				uint8_t data[] = "stop";
+				rf69.send(data, sizeof(data));
+				rf69.waitPacketSent();
+				Serial.println("Sent update");
+			}
+		}
+		else {
+			Serial.println("Receive failed");
+		}
 	}
 }
