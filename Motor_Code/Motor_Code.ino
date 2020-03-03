@@ -51,7 +51,9 @@ void loop() {
       // check Orientation, return true if orientation matches destination
       break;
     case 3:
-      
+      motorStop();
+      UGVManual();
+      break;
   }
 }
 
@@ -66,10 +68,10 @@ void motorStop() {
 void motorStraight() {
   analogWrite(LeftEn, 100);
   analogWrite(RightEn, 100);
-//  digitalWrite(LeftMotorOUTA, HIGH);
-//  digitalWrite(LeftMotorOUTB, LOW);
-//  digitalWrite(RightMotorOUTA, HIGH);
-//  digitalWrite(RightMotorOUTB, LOW);
+  digitalWrite(LeftMotorOUTA, HIGH);
+  digitalWrite(LeftMotorOUTB, LOW);
+  digitalWrite(RightMotorOUTA, HIGH);
+  digitalWrite(RightMotorOUTB, LOW);
 }
 void turnUGV(const double& locAngle, const double& UGV_Angle) {
   /*
@@ -126,10 +128,30 @@ void turnUGV(const double& locAngle, const double& UGV_Angle) {
  */
 
 void UGVManual () {
-  if (/* keyboard hit */) {
-    if (/* w */) {
-      digitalWrite(LeftMotorOUTA, HIGH);
+  if (/* keyboard hit */ true) {
+    if (/* exit manual button */true) {
+      motorState = 0; 
+      return;
+    }
+    if (/* w */true ) {
+      motorStraight();
+      while (/* !keyboard hit */false) {} // change to store keyboard value
+    } else if (/* a */false) {
+      analogWrite(LeftEn, 100);
+      analogWrite(RightEn, 100);
+      digitalWrite(LeftMotorOUTA, LOW);
+      digitalWrite(LeftMotorOUTB, HIGH);
       digitalWrite(RightMotorOUTA, HIGH);
-    } else if (/* l
+      digitalWrite(RightMotorOUTB, LOW);
+      while (/* !keyboard hit */true) {}
+    } else if (/* d */false) {
+      analogWrite(LeftEn, 100);
+      analogWrite(RightEn, 100);
+      digitalWrite(LeftMotorOUTA, HIGH);
+      digitalWrite(LeftMotorOUTB, LOW);
+      digitalWrite(RightMotorOUTA, LOW);
+      digitalWrite(RightMotorOUTB, HIGH);
+      while (/* !keyboard hit*/true) {}
+    } else {return;}
   }
 }
