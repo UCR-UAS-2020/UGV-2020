@@ -193,3 +193,5 @@ char stateChange()  //rx recieving
 	}
 	return stateChanger;
 }
+
+//Dan's test
