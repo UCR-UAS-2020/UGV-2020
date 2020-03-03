@@ -2,6 +2,7 @@
 //#include "/* Compass */"
 
 
+
 #define LeftMotorOUTA 1
 #define LeftMotorOUTB 2
 #define LeftMotorINA 3    // c
@@ -15,9 +16,11 @@
 
 const unsigned MAXSPEED = 255;
 //unsigned motorSpeed = 0;
+int keyIn = 0;
+int currDrive = 0;
 
 void setup() {
-
+  Serial.begin(9600);
   /*    Left Motor Pins   */
   pinMode(LeftMotorOUTA, OUTPUT);   // M1
   pinMode(LeftMotorOUTB, OUTPUT);   // M2
@@ -33,7 +36,7 @@ void setup() {
   pinMode(RightEn, OUTPUT);           // Outputs into motor driver (right) the speed we want
 }
 
-int motorState = 0;
+int motorState = 3;
 double locAngleFromOrientation = 0.0;
 
 void loop() {
@@ -51,7 +54,6 @@ void loop() {
       // check Orientation, return true if orientation matches destination
       break;
     case 3:
-      motorStop();
       UGVManual();
       break;
   }
@@ -128,30 +130,58 @@ void turnUGV(const double& locAngle, const double& UGV_Angle) {
  */
 
 void UGVManual () {
-  if (/* keyboard hit */) {
-    if (/* exit manual button */) {
-      motorState = 0; 
-      return;
+  if (Serial.available() > 0) {
+    keyIn = Serial.read();
+  }
+  else {return;}
+  
+  if (keyIn == 'p') {
+    Serial.println("Exiting manual");
+    motorState = 0; 
+    return;
+  }
+  if (keyIn == 'w') {
+    if (currDrive == 'w') {
+      currDrive = 0;
+      Serial.println("Stop Forward");
+      motorStop();
     }
-    if (/* w */) {
+    else {
+      Serial.println("Going Forward");
+      currDrive = 'w';
       motorStraight();
-      while (/* !keyboard hit */) {} // change to store keyboard value
-    } else if (/* a */) {
+    }
+  } else if (keyIn == 'a') {
+    if (currDrive == 'a') {
+      currDrive = 0;
+      Serial.println("Not Lefting");
+      motorStop();
+    }
+    else {
+      Serial.println("Turning Left");
+      currDrive = 'a';
       analogWrite(LeftEn, 100);
       analogWrite(RightEn, 100);
       digitalWrite(LeftMotorOUTA, LOW);
       digitalWrite(LeftMotorOUTB, HIGH);
       digitalWrite(RightMotorOUTA, HIGH);
       digitalWrite(RightMotorOUTB, LOW);
-      while (/* !keyboard hit */) {}
-    } else if (/* d */) {
+    }
+  } else if (keyIn == 'd') {
+    if (currDrive == 'd') {
+      currDrive = 0;
+      Serial.println("Not Righting");
+      motorStop();
+    }
+    else {
+      Serial.println("Turning Right");
+      currDrive = 'd';
       analogWrite(LeftEn, 100);
       analogWrite(RightEn, 100);
       digitalWrite(LeftMotorOUTA, HIGH);
       digitalWrite(LeftMotorOUTB, LOW);
       digitalWrite(RightMotorOUTA, LOW);
       digitalWrite(RightMotorOUTB, HIGH);
-      while (/* !keyboard hit*/) {}
-    } else {return;}
-  }
+    }
+  } else {return;}
 }
