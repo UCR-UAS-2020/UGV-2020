@@ -1,5 +1,4 @@
-#ifndef RADIO_H
-#define RADIO_H
+#pragma once
 
 #include <RH_RF69.h>
 #include <RHReliableDatagram.h>
@@ -9,4 +8,3 @@ char stateChange();
 //void ping();
 
 
-#endif

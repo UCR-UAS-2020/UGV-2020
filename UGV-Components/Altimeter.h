@@ -1,5 +1,4 @@
-#ifndef ALT_H
-#define ALT_H
+#pragma once
 
 #include <SPI.h>
 #include <SoftwareSerial.h>
@@ -17,5 +16,3 @@ void altimeterSetup();
 double altimeterReturn();
 
 bool detectIfAboveAlt(double);
-
-#endif
