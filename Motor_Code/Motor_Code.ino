@@ -128,30 +128,30 @@ void turnUGV(const double& locAngle, const double& UGV_Angle) {
  */
 
 void UGVManual () {
-  if (/* keyboard hit */ true) {
-    if (/* exit manual button */true) {
+  if (/* keyboard hit */) {
+    if (/* exit manual button */) {
       motorState = 0; 
       return;
     }
-    if (/* w */true ) {
+    if (/* w */) {
       motorStraight();
-      while (/* !keyboard hit */false) {} // change to store keyboard value
-    } else if (/* a */false) {
+      while (/* !keyboard hit */) {} // change to store keyboard value
+    } else if (/* a */) {
       analogWrite(LeftEn, 100);
       analogWrite(RightEn, 100);
       digitalWrite(LeftMotorOUTA, LOW);
       digitalWrite(LeftMotorOUTB, HIGH);
       digitalWrite(RightMotorOUTA, HIGH);
       digitalWrite(RightMotorOUTB, LOW);
-      while (/* !keyboard hit */true) {}
-    } else if (/* d */false) {
+      while (/* !keyboard hit */) {}
+    } else if (/* d */) {
       analogWrite(LeftEn, 100);
       analogWrite(RightEn, 100);
       digitalWrite(LeftMotorOUTA, HIGH);
       digitalWrite(LeftMotorOUTB, LOW);
       digitalWrite(RightMotorOUTA, LOW);
       digitalWrite(RightMotorOUTB, HIGH);
-      while (/* !keyboard hit*/true) {}
+      while (/* !keyboard hit*/) {}
     } else {return;}
   }
 }
