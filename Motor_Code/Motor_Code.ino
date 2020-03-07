@@ -16,8 +16,8 @@
 
 const unsigned MAXSPEED = 255;
 //unsigned motorSpeed = 0;
-int keyIn = 0;
-int currDrive = 0;
+int currDrive = -1;
+int motorState = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -36,7 +36,7 @@ void setup() {
   pinMode(RightEn, OUTPUT);           // Outputs into motor driver (right) the speed we want
 }
 
-int motorState = 3;
+
 double locAngleFromOrientation = 0.0;
 
 void loop() {
@@ -54,7 +54,10 @@ void loop() {
       // check Orientation, return true if orientation matches destination
       break;
     case 3:
-      UGVManual();
+      if (Serial.available() > 0) {
+        currDrive = UGVManual(Serial.read(), currDrive);
+      }
+
       break;
   }
 }
@@ -82,23 +85,32 @@ void turnUGV(const double& locAngle, const double& UGV_Angle) {
    *            // figure out which way to turn based on angle
    *
    */
-   analogWrite(LeftEn, 100);
-   analogWrite(RightEn, 100);
+
 //   once done turning, motorState = straight
 /* Right Turn */
+  rTurnUGV();
 
-   digitalWrite(LeftMotorOUTA, HIGH);
-   digitalWrite(LeftMotorOUTB, LOW);
-   digitalWrite(RightMotorOUTA, LOW);
-   digitalWrite(RightMotorOUTB, HIGH);
 
 /* Left Turn */
-   digitalWrite(LeftMotorOUTA, LOW);
-   digitalWrite(LeftMotorOUTB, HIGH);
-   digitalWrite(RightMotorOUTA, HIGH);
-   digitalWrite(RightMotorOUTB, LOW);
+  rTurnUGV();
 }
 
+void rTurnUGV() {
+  analogWrite(LeftEn, 100);
+  analogWrite(RightEn, 100);
+  digitalWrite(LeftMotorOUTA, LOW);
+  digitalWrite(LeftMotorOUTB, HIGH);
+  digitalWrite(RightMotorOUTA, HIGH);
+  digitalWrite(RightMotorOUTB, LOW);
+}
+vodi lTurnUGV() {
+  analogWrite(LeftEn, 100);
+  analogWrite(RightEn, 100);
+  digitalWrite(LeftMotorOUTA, HIGH);
+  digitalWrite(LeftMotorOUTB, LOW);
+  digitalWrite(RightMotorOUTA, LOW);
+  digitalWrite(RightMotorOUTB, HIGH);
+}
 //void checkOrientatoin(const double& locAngle, const double& UGV_Angle) {
 //  if ((fabs(locAngle - UGV_Angle)) >= 0.001) { // if not oriented correctly
 //    for (unsigned i = 0; i < 5; i++ ) {
@@ -129,59 +141,91 @@ void turnUGV(const double& locAngle, const double& UGV_Angle) {
  *  }
  */
 
-void UGVManual () {
-  if (Serial.available() > 0) {
-    keyIn = Serial.read();
-  }
-  else {return;}
-  
+int UGVManual (const int& keyIn, const int& prevDrive) {
   if (keyIn == 'p') {
     Serial.println("Exiting manual");
-    motorState = 0; 
-    return;
+    motorState = 0;
+    return -1;
   }
-  if (keyIn == 'w') {
-    if (currDrive == 'w') {
-      currDrive = 0;
-      Serial.println("Stop Forward");
-      motorStop();
-    }
-    else {
-      Serial.println("Going Forward");
-      currDrive = 'w';
-      motorStraight();
-    }
-  } else if (keyIn == 'a') {
-    if (currDrive == 'a') {
-      currDrive = 0;
-      Serial.println("Not Lefting");
-      motorStop();
-    }
-    else {
-      Serial.println("Turning Left");
-      currDrive = 'a';
-      analogWrite(LeftEn, 100);
-      analogWrite(RightEn, 100);
-      digitalWrite(LeftMotorOUTA, LOW);
-      digitalWrite(LeftMotorOUTB, HIGH);
-      digitalWrite(RightMotorOUTA, HIGH);
-      digitalWrite(RightMotorOUTB, LOW);
-    }
-  } else if (keyIn == 'd') {
-    if (currDrive == 'd') {
-      currDrive = 0;
-      Serial.println("Not Righting");
-      motorStop();
-    }
-    else {
-      Serial.println("Turning Right");
-      currDrive = 'd';
-      analogWrite(LeftEn, 100);
-      analogWrite(RightEn, 100);
-      digitalWrite(LeftMotorOUTA, HIGH);
-      digitalWrite(LeftMotorOUTB, LOW);
-      digitalWrite(RightMotorOUTA, LOW);
-      digitalWrite(RightMotorOUTB, HIGH);
-    }
-  } else {return;}
+  if (keyIn == prevDrive) {
+    Serial.println("Stopped Previous Movement");
+    motorStop();
+    return -1;
+  }
+
+  switch (keyIn) {
+  case 'w':
+    Serial.println("Moving Forward");
+    motorStraight();
+    return 'w';
+  case 'a':
+    Serial.println("Turning Left");
+
+    analogWrite(LeftEn, 100);
+    analogWrite(RightEn, 100);
+    digitalWrite(LeftMotorOUTA, LOW);
+    digitalWrite(LeftMotorOUTB, HIGH);
+    digitalWrite(RightMotorOUTA, HIGH);
+    digitalWrite(RightMotorOUTB, LOW);
+
+    return 'a';
+  // case 's':
+  //   break;
+  case 'd':
+    Serial.println("Turning Right");
+
+    analogWrite(LeftEn, 100);
+    analogWrite(RightEn, 100);
+    digitalWrite(LeftMotorOUTA, HIGH);
+    digitalWrite(LeftMotorOUTB, LOW);
+    digitalWrite(RightMotorOUTA, LOW);
+    digitalWrite(RightMotorOUTB, HIGH);
+
+    return 'd';
+  }
+
+  // if (keyIn == 'w') {
+  //   if (prevDrive == 'w') {
+  //     Serial.println("Stop Forward");
+  //     motorStop();
+  //     return -1
+  //   }
+  //   else {
+  //     Serial.println("Going Forward");
+  //     prevDrive = 'w';
+  //     motorStraight();
+  //   }
+  // } else if (keyIn == 'a') {
+  //   if (prevDrive == 'a') {
+  //     Serial.println("Not Lefting");
+  //     motorStop();
+  //     return -1
+  //   }
+  //   else {
+  //     Serial.println("Turning Left");
+  //     prevDrive = 'a';
+  //     analogWrite(LeftEn, 100);
+  //     analogWrite(RightEn, 100);
+  //     digitalWrite(LeftMotorOUTA, LOW);
+  //     digitalWrite(LeftMotorOUTB, HIGH);
+  //     digitalWrite(RightMotorOUTA, HIGH);
+  //     digitalWrite(RightMotorOUTB, LOW);
+  //   }
+  // } else if (keyIn == 'd') {
+  //   if (prevDrive == 'd') {
+  //     Serial.println("Not Righting");
+  //     motorStop();
+  //     return -1
+  //   }
+  //   else {
+  //     Serial.println("Turning Right");
+  //     prevDrive = 'd';
+  //     analogWrite(LeftEn, 100);
+  //     analogWrite(RightEn, 100);
+  //     digitalWrite(LeftMotorOUTA, HIGH);
+  //     digitalWrite(LeftMotorOUTB, LOW);
+  //     digitalWrite(RightMotorOUTA, LOW);
+  //     digitalWrite(RightMotorOUTB, HIGH);
+  //   }
+  // } else {return;}
 }
