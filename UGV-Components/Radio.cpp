@@ -139,7 +139,7 @@ char stateChange()  //rx recieving
 		uint8_t buf[RH_RF69_MAX_MESSAGE_LEN];
 		uint8_t len = sizeof(buf);
 		if (rf69.recv(buf, &len)) {
-			if (!len) return;
+			if (!len) return 'n';
 			buf[len] = 0;
 			Serial.print("Received [");
 			Serial.print(len);
@@ -147,9 +147,9 @@ char stateChange()  //rx recieving
 
 			stateChanger = len;
 			String str = (char*)buf;
-			String buffer_char = str[0];
+			char buffer_char = str[0];
 
-			if (buffer_char == "0") {
+			if (buffer_char == '0') {
 				// Send start mode
 				uint8_t data[] = "start or stop";
 				rf69.send(data, sizeof(data));
@@ -157,7 +157,7 @@ char stateChange()  //rx recieving
 				Serial.println("Sent update");
 				stateChanger = 0x00;  //ascii 0
 			}
-			if (buffer_char == "1") {
+			if (buffer_char == '1') {
 				// Send auto mode
 				uint8_t data[] = "auto or for";
 				rf69.send(data, sizeof(data));
@@ -165,7 +165,7 @@ char stateChange()  //rx recieving
 				Serial.println("Sent update");
 				stateChanger = 0x01;  //ascii 1
 			}
-			if (buffer_char == "2") {
+			if (buffer_char == '2') {
 				// Send manual mode
 				uint8_t data[] = "manual or back";
 				rf69.send(data, sizeof(data));
@@ -173,7 +173,7 @@ char stateChange()  //rx recieving
 				Serial.println("Sent update");
 				stateChanger = 0x02;  //ascii 2
 			}
-			if (buffer_char == "3") {
+			if (buffer_char == '3') {
 				// Send stop mode
 				uint8_t data[] = "stop or turnl";
 				rf69.send(data, sizeof(data));
@@ -181,7 +181,7 @@ char stateChange()  //rx recieving
 				Serial.println("Sent update");
 				stateChanger = 0x03;  //ascii 3
 			}
-			if (buffer_char == "4") {
+			if (buffer_char == '4') {
 				// Send stop mode
 				uint8_t data[] = "turnr";
 				rf69.send(data, sizeof(data));

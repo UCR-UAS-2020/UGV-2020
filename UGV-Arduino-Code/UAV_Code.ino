@@ -2,8 +2,8 @@
 #include "GPS.h"
 #include "Radio.h"
 #include "ServoTimer2.h"
-int state = 0;
-double currentLat;
+int state = 32; //manual state
+double currentLat; 
 double currentLon;
 
 float period = 50.0;
