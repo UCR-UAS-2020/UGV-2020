@@ -20,7 +20,7 @@ bool isGrounded = false;
 enum UGVControlState {CONTROL_START, CONTROL_AUTO, CONTROL_MANUAL, CONTROL_STOP};
 enum UGVManualState {COMMAND_STOP, COMMAND_FORWARD, COMMAND_BACK, COMMAND_TURNL, COMMAND_TURNR};
 UGVControlState control_state;
-UGVManualState manual_state;
+char manual_state;
 char currState;
 
 void setup()
@@ -70,19 +70,47 @@ void loop()
         currentLat = getLat();
         currentLon = getLon();
 
-        ManualStateMachine(stateChange());
+        manual_state = stateChange();
+        if(manual_state == COMMAND_FORWARD)
+        {
+          state = 33;
+        }
+        else if(manual_state == COMMAND_RIGHT)
+        {
+          state = 34;
+        }
+        else if(manual_state == COMMAND_LEFT)
+        {
+          state = 35;
+        }
+        
         //motors are in a stop state
       }
     case 33: //manual drive
       {
+         manual_state = stateChange();
+         if(manual_state == COMMAND_STOP)
+        {
+          state = 32;
+        }
         //forward
       }
     case 34: //manual drive
       {
+        manual_state = stateChange();
+         if(manual_state == COMMAND_STOP)
+        {
+          state = 32;
+        }
         //turnRight
       }
     case 35: //manual drive
       {
+        manual_state = stateChange();
+         if(manual_state == COMMAND_STOP)
+        {
+          state = 32;
+        }
         //turnLeft
       }
 
@@ -106,29 +134,5 @@ void CommandStateMachine(char command_state)
   else if (command_state == 3)
   {
     control_state = CONTROL_STOP;
-  }
-}
-
-void ManualStateMachine(char manual_state)
-{
-  if (manual_state == '0')
-  {
-    manual_state = COMMAND_STOP;
-  }
-  else if (manual_state == '1')
-  {
-    manual_state = COMMAND_FORWARD;
-  }
-  else if (manual_state == '2')
-  {
-    manual_state = COMMAND_BACK;
-  }
-  else if (manual_state == '3')
-  {
-    manual_state = COMMAND_TURNL;
-  }
-  else if (manual_state == '4')
-  {
-    manual_state = COMMAND_TURNR;
   }
 }
