@@ -62,7 +62,7 @@ double calculateDegree(double lat, double lon)
 		Serial.println();
 		if (gps.location.isValid())
 		{
-			double courseToFinish = TinyGPSPlus::courseTo(gps.location.lat(), gps.location.lng(), lat, lon;
+			double courseToFinish = TinyGPSPlus::courseTo(gps.location.lat(), gps.location.lng(), lat, lon);
 
 			Serial.print(courseToFinish, 6);
 			Serial.print(F(" degrees ["));
