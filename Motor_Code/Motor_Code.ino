@@ -1,8 +1,6 @@
 //#include "Motor.h"
 //#include "/* Compass */"
 
-
-
 #define LeftMotorOUTA 1
 #define LeftMotorOUTB 2
 #define LeftMotorINA 3    // c
@@ -103,7 +101,7 @@ void rTurnUGV() {
   digitalWrite(RightMotorOUTA, HIGH);
   digitalWrite(RightMotorOUTB, LOW);
 }
-vodi lTurnUGV() {
+void lTurnUGV() {
   analogWrite(LeftEn, 100);
   analogWrite(RightEn, 100);
   digitalWrite(LeftMotorOUTA, HIGH);
