@@ -23,12 +23,42 @@ UGVControlState control_state;
 char manual_state;
 char currState;
 
+//motor
+#define LeftMotorOUTA 1
+#define LeftMotorOUTB 2
+#define LeftMotorINA 3    // c
+#define LeftMotorINB 4    // cc
+#define LeftEn 5
+#define RightMotorOUTA 6  // c
+#define RightMotorOUTB 7  // cc
+#define RightMotorINA 8
+#define RightMotorINB 9
+#define RightEn 10
+
+const unsigned MAXSPEED = 255;
+
 void setup()
 {
   //place component setup here
   altimeterSetup();
   GPSsetup();
   radioSetup();
+
+  //motor setup
+  Serial.begin(9600);
+  /*    Left Motor Pins   */
+  pinMode(LeftMotorOUTA, OUTPUT);   // M1
+  pinMode(LeftMotorOUTB, OUTPUT);   // M2
+  pinMode(LeftMotorINA, INPUT);     // OUTA     Reads out A pulses    clockwise (forward) - A first
+  pinMode(LeftMotorINB, INPUT);     // OUTB     Reads out B pulses    counter clockwaise (backward) - B first
+  pinMode(LeftEn, OUTPUT);          // Outputs into motor driver (left) the speed we want
+
+  /*    Right Motor Pins    */
+  pinMode(RightMotorOUTA, OUTPUT);    // M1
+  pinMode(RightMotorOUTB, OUTPUT);    // M2
+  pinMode(RightMotorINA, INPUT);      // OUTA     Reads out A pulses    clockwise (forward) - A first
+  pinMode(RightMotorINB, INPUT);      // OUTB     Reads out B pulses    counter clockwaise (backward) - B first
+  pinMode(RightEn, OUTPUT);           // Outputs into motor driver (right) the speed we want
 }
 
 void loop()
@@ -75,15 +105,16 @@ void loop()
         {
           state = 33;
         }
-        else if(manual_state == COMMAND_RIGHT)
+        else if(manual_state == COMMAND_TURNR)
         {
           state = 34;
         }
-        else if(manual_state == COMMAND_LEFT)
+        else if(manual_state == COMMAND_TURNL)
         {
           state = 35;
         }
-        
+
+        motorStop();
         //motors are in a stop state
       }
     case 33: //manual drive
@@ -93,6 +124,7 @@ void loop()
         {
           state = 32;
         }
+        motorStraight();
         //forward
       }
     case 34: //manual drive
@@ -102,6 +134,7 @@ void loop()
         {
           state = 32;
         }
+        rTurnUGV();
         //turnRight
       }
     case 35: //manual drive
@@ -111,6 +144,7 @@ void loop()
         {
           state = 32;
         }
+        lTurnUGV();
         //turnLeft
       }
 
@@ -135,4 +169,37 @@ void CommandStateMachine(char command_state)
   {
     control_state = CONTROL_STOP;
   }
+}
+
+void motorStop() 
+{
+  analogWrite(LeftEn, 0);
+  analogWrite(RightEn, 0);
+}
+
+void motorStraight() 
+{
+  analogWrite(LeftEn, 100);
+  analogWrite(RightEn, 100);
+  digitalWrite(LeftMotorOUTA, HIGH);
+  digitalWrite(LeftMotorOUTB, LOW);
+  digitalWrite(RightMotorOUTA, HIGH);
+  digitalWrite(RightMotorOUTB, LOW);
+}
+
+void lTurnUGV() {
+  analogWrite(LeftEn, 100);
+  analogWrite(RightEn, 100);
+  digitalWrite(LeftMotorOUTA, LOW);
+  digitalWrite(LeftMotorOUTB, HIGH);
+  digitalWrite(RightMotorOUTA, HIGH);
+  digitalWrite(RightMotorOUTB, LOW);
+}
+void rTurnUGV() {
+  analogWrite(LeftEn, 100);
+  analogWrite(RightEn, 100);
+  digitalWrite(LeftMotorOUTA, HIGH);
+  digitalWrite(LeftMotorOUTB, LOW);
+  digitalWrite(RightMotorOUTA, LOW);
+  digitalWrite(RightMotorOUTB, HIGH);
 }
