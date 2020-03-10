@@ -11,41 +11,36 @@
 // change addresses for each client board, any number :)
 #define MY_ADDRESS     2
 
-char rx_byte = 0;
+char rx_byte = 'x';
 
 #if defined (__AVR_ATmega32U4__) // Feather 32u4 w/Radio
   #define RFM69_CS      8
   #define RFM69_INT     7
   #define RFM69_RST     4
-  #define LED           13
 #endif
 
 #if defined(ADAFRUIT_FEATHER_M0) // Feather M0 w/Radio
   #define RFM69_CS      8
   #define RFM69_INT     3
   #define RFM69_RST     4
-  #define LED           13
 #endif
 
 #if defined (__AVR_ATmega328P__)  // Feather 328P w/wing
   #define RFM69_INT     3  // 
   #define RFM69_CS      4  //
   #define RFM69_RST     2  // "A"
-  #define LED           13
 #endif
 
 #if defined(ESP8266)    // ESP8266 feather w/wing
   #define RFM69_CS      2    // "E"
   #define RFM69_IRQ     15   // "B"
   #define RFM69_RST     16   // "D"
-  #define LED           0
 #endif
 
 #if defined(ESP32)    // ESP32 feather w/wing
   #define RFM69_RST     13   // same as LED
   #define RFM69_CS      33   // "B"
   #define RFM69_INT     27   // "A"
-  #define LED           13
 #endif
 
 /* Teensy 3.x w/wing
@@ -75,8 +70,7 @@ void setup()
 {
   Serial.begin(115200);
   //while (!Serial) { delay(1); } // wait until serial console is open, remove if not tethered to computer
-
-  pinMode(LED, OUTPUT);     
+  
   pinMode(RFM69_RST, OUTPUT);
   digitalWrite(RFM69_RST, LOW);
 
@@ -108,8 +102,6 @@ void setup()
   uint8_t key[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
   rf69.setEncryptionKey(key);
-  
-  pinMode(LED, OUTPUT);
 
   Serial.print("RFM69 radio @");  Serial.print((int)RF69_FREQ);  Serial.println(" MHz");
 }
@@ -118,11 +110,13 @@ void setup()
 // Dont put this on the stack:
 uint8_t buf[RH_RF69_MAX_MESSAGE_LEN];
 uint8_t data[] = "  OK";
+char radiopacket[2] = "x";
 
 void loop() {
-  delay(1000);  // Wait 1 second between transmits, could also 'sleep' here!
-
-  char radiopacket[20] = "Hello World #";
+  delay(100);  // Wait 1 second between transmits, could also 'sleep' here!
+  userInput();
+  radiopacket[0] = rx_byte;
+  
   itoa(packetnum++, radiopacket+13, 10);
   Serial.print("Sending "); Serial.println(radiopacket);
   
@@ -139,7 +133,6 @@ void loop() {
       Serial.print(rf69.lastRssi());
       Serial.print("] : ");
       Serial.println((char*)buf);     
-      Blink(LED, 40, 3); //blink LED 3 times, 40ms between blinks
     } else {
       Serial.println("No reply, is anyone listening?");
     }
@@ -148,20 +141,10 @@ void loop() {
   }
 }
 
-void Blink(byte PIN, byte DELAY_MS, byte loops) {
-  for (byte i=0; i<loops; i++)  {
-    digitalWrite(PIN,HIGH);
-    delay(DELAY_MS);
-    digitalWrite(PIN,LOW);
-    delay(DELAY_MS);
-  }
-}
-
 void userInput()
 {
   if(Serial.available() > 0)
   {
-    rx.byte = Serial_read();
-    
+    rx_byte = Serial.read();
   }
 }
